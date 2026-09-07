@@ -103,7 +103,11 @@ then
 else
     if [ "$log" = yes ]
     then
-        set -o pipefail 2>/dev/null || true
+		# pipefail is only available in recent dash (0.5.13 onwards)
+        if (set -o pipefail) 2>/dev/null
+        then
+            set -o pipefail
+        fi
         ntpdig $ADJUST $TIMEOUT $PASSTHROUGH $* 2>&1 | logger -t ntpdate
     else
         ntpdig $ADJUST $TIMEOUT $PASSTHROUGH $*
